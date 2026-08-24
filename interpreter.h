@@ -8,7 +8,7 @@ typedef enum itpStatus {
     STATUS_OK, /* program execution ongoing */
     STATUS_MISMATCHED_BRACE, /* ] found w/o matching  [ */
     STATUS_STACK_OVERFLOW, /* too much loop nesting */
-    STATUS_TAPE_OVERFLOW, /* tape pointer moved too far right */
+    STATUS_TAPE_OVERFLOW, /* Unused. */
 } itpStatus;
 
 /* Denotes how the interpreter should behave when it encoounters an EOF

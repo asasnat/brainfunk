@@ -136,10 +136,7 @@ itpStatus itpStep()
         break;
 
     case '>':
-        ++g_tapePointer;
-        if (g_tapePointer >= g_tapeLength + g_tape) {
-            g_status = STATUS_TAPE_OVERFLOW;
-        }
+        if (g_tapePointer < g_tapeLength + g_tape - 1) ++g_tapePointer;
         break;
 
     case '.':
