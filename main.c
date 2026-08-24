@@ -26,6 +26,8 @@ static bool LoadProgramFromFile(const char* filePath, char** program)
 
     if (out < (size_t)fileLength) {
         fprintf(stderr, "Failed to read contents of file \"%s\"\n", filePath);
+        free(*program);
+        *program = NULL;
         return false;
     }
 
@@ -123,16 +125,18 @@ int main(int argc, char** argv)
             default:
                 goto invalid;
             }
-        } else {
-        invalid:
-            fprintf(stderr, "Invalid parameter: %s\n", arg);
+        } else if (program == NULL) {
+            if (!LoadProgramFromFile(arg, &program)) {
+            invalid:
+                fprintf(stderr, "Invalid parameter: %s\n", arg);
+            }
         }
     }
 
     if (program == NULL || printHelp) {
         fprintf(stderr,
             "Brainfunk command line parameters:\n"
-            "-f [file]     Load program from file\n\n"
+            "[filename]    Load program\n\n"
             "-h            Show this info\n\n"
             "-t [bytes]    Specifies the size of the tape,\n"
             "              in bytes. (default: 32768)\n\n"
