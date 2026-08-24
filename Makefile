@@ -8,8 +8,8 @@ SOURCES = main.c interpreter.c
 
 CC = gcc
 #CC = g++
-#CPPFLAGS = -O0 -ggdb -Wall -Wextra #-I$(SRC)
-CPPFLAGS = -O3 -Wall -Wextra
+CPPFLAGS = -O0 -ggdb -Wall -Wextra #-I$(SRC)
+#CPPFLAGS = -O3 -Wall -Wextra
 LIBS = -lc
 
 .PHONY: Makefile
