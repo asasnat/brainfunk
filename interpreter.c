@@ -20,10 +20,22 @@ static size_t g_stackSize = 0;
 
 static itpStatus g_status;
 
-#define INPUT_BUFFER_SIZE 512
+void (*g_eofHandler) () = NULL;
 
-/* typical C... sigh */
-static char g_inputBuffer[INPUT_BUFFER_SIZE];
+static void itpEOFHandler_Zero()
+{
+    *g_tapePointer = 0;
+}
+
+static void itpEOFHandler_MinusOne()
+{
+    *g_tapePointer = 255;
+}
+
+static void itpEOFHandler_Unchanged()
+{
+    /* lol */
+}
 
 /* Helper function. When called, it will skip the current loop.
  * Called when a [ instruction is encountered
@@ -57,7 +69,7 @@ static void SkipToMatchingClosingBrace()
     }
 }
 
-void itpInit(size_t tapeLength, size_t stackSize)
+void itpInit(size_t tapeLength, size_t stackSize, itpEOFMode eofMode)
 {
     if (g_tape != NULL) free(g_tape);
     if (g_stack != NULL) free(g_stack);
@@ -77,6 +89,23 @@ void itpInit(size_t tapeLength, size_t stackSize)
     g_stackSize  = stackSize;
 
     g_status = STATUS_OK;
+
+    switch (eofMode) {
+    case EOF_ZERO:
+        g_eofHandler = itpEOFHandler_Zero;
+        break;
+
+    case EOF_MINUS_ONE:
+        g_eofHandler = itpEOFHandler_MinusOne;
+        break;
+
+    case EOF_UNCHANGED:
+        g_eofHandler = itpEOFHandler_Unchanged;
+        break;
+
+    default:
+        break;
+    }
 
     if (g_program != NULL) g_progPointer = g_program;
 }
@@ -117,8 +146,13 @@ itpStatus itpStep()
         putchar(*g_tapePointer);
         break;
 
-    case ',':
-        *g_tapePointer = getchar();
+    case ',': {
+            char input = getchar();
+
+            if (input == EOF) {
+                g_eofHandler();
+            } else *g_tapePointer = input;
+        }
         break;
 
     case '[':

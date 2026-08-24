@@ -11,10 +11,18 @@ typedef enum itpStatus {
     STATUS_TAPE_OVERFLOW, /* tape pointer moved too far right */
 } itpStatus;
 
+/* Denotes how the interpreter should behave when it encoounters an EOF
+ * in standard input. */
+typedef enum itpEOFMode {
+    EOF_ZERO, /* cell is set to zero */
+    EOF_MINUS_ONE, /* I guess set cell to 255 (-1 when cast to uint8_t)? */
+    EOF_UNCHANGED /* cell is left unchanged */
+} itpEOFMode;
+
 /* Initialises the tape and the stack.
  * Does NOT initialise the program itself.
  * You must do that with itpLoadProgram. */
-void itpInit(size_t tapeLength, size_t stackSize);
+void itpInit(size_t tapeLength, size_t stackSize, itpEOFMode eofMode);
 
 /* Loads the program from a user-provided string.
  * The string MUST be null-terminated.

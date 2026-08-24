@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 {
     size_t tapeLength = 32768;
     size_t stackSize = 32768;
+    itpEOFMode eofMode = EOF_UNCHANGED;
     char* program = NULL;
     bool printHelp = false;
 
@@ -101,6 +102,24 @@ int main(int argc, char** argv)
                 }
                 break;
 
+            case 'e': /* specify EOF mode */
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "No EOF mode specified\n");
+                    break;
+                }
+
+                if        (strcmp("zero",      argv[i]) == 0) {
+                    eofMode = EOF_ZERO;
+                } else if (strcmp("minusone",  argv[i]) == 0) {
+                    eofMode = EOF_MINUS_ONE;
+                } else if (strcmp("unchanged", argv[i]) == 0) {
+                    eofMode = EOF_UNCHANGED;
+                } else {
+                    fprintf(stderr, "Invalid EOF mode\n");
+                }
+                break;
+
             default:
                 goto invalid;
             }
@@ -119,12 +138,15 @@ int main(int argc, char** argv)
             "              in bytes. (default: 32768)\n\n"
             "-s [entries]  Specifies the length of the stack,\n"
             "              in entries. (default: 32768)\n\n"
+            "-e [mode]     Specifies the EOF handling mode.\n"
+            "              Possible values: zero, minusone,\n"
+            "              unchanged (default: unchanged)\n\n"
         );
 
         return -1;
     }
 
-    itpInit(tapeLength, stackSize);
+    itpInit(tapeLength, stackSize, eofMode);
     itpLoadProgram(program);
 
     return itpRun();
