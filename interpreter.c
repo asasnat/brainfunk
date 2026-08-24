@@ -22,17 +22,17 @@ static itpStatus g_status;
 
 void (*g_eofHandler) () = NULL;
 
-static void itpEOFHandler_Zero()
+static void eofHandler_Zero()
 {
     *g_tapePointer = 0;
 }
 
-static void itpEOFHandler_MinusOne()
+static void eofHandler_MinusOne()
 {
     *g_tapePointer = 255;
 }
 
-static void itpEOFHandler_Unchanged()
+static void eofHandler_Unchanged()
 {
     /* lol */
 }
@@ -92,15 +92,15 @@ void itpInit(size_t tapeLength, size_t stackSize, itpEOFMode eofMode)
 
     switch (eofMode) {
     case EOF_ZERO:
-        g_eofHandler = itpEOFHandler_Zero;
+        g_eofHandler = eofHandler_Zero;
         break;
 
     case EOF_MINUS_ONE:
-        g_eofHandler = itpEOFHandler_MinusOne;
+        g_eofHandler = eofHandler_MinusOne;
         break;
 
     case EOF_UNCHANGED:
-        g_eofHandler = itpEOFHandler_Unchanged;
+        g_eofHandler = eofHandler_Unchanged;
         break;
 
     default:
