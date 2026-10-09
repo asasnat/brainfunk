@@ -180,7 +180,7 @@ itpStatus itpStep()
 
     ++g_progPointer;
 
-    return STATUS_OK;
+    return g_status;
 }
 
 itpStatus itpRun()
